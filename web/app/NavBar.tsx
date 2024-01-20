@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import logo from "@/public/images/logo.svg";
 import Image from "next/image";
 
@@ -10,8 +13,9 @@ const links = [
 ];
 
 const NavBar = () => {
+  const currentPath = usePathname();
   return (
-    <nav className="p-2 flex justify-between items-center space-x-5  bg-gray-100">
+    <nav className="py-2 pe-2 flex justify-between items-center space-x-5  bg-gray-100">
       <div className="flex justify-between items-center">
         <Link href="/">
           <Image src={logo} alt="logo" />
@@ -19,7 +23,12 @@ const NavBar = () => {
 
         <ul className="flex space-x-5 text-sm">
           {links.map((link) => (
-            <li key={link.href}>
+            <li
+              key={link.href}
+              className={`hover:text-slate-800 ${
+                currentPath === link.href ? "text-slate-900" : "text-slate-500"
+              }`}
+            >
               <Link href={link.href}>{link.label}</Link>
             </li>
           ))}
