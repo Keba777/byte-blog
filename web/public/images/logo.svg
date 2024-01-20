@@ -1,0 +1,11 @@
+<svg width="400" height="40" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="8%" cy="50%" r="5%" fill="#444" />
+
+  <text x="7%" y="50%" alignment-baseline="middle" text-anchor="middle" font-family="Pacifico, cursive" font-size="26" fill="#fff" font-weight="bold" font-style="italic">
+    B
+  </text>
+
+  <text x="22%" y="50%" alignment-baseline="middle" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="20" fill="#444">
+    <tspan dy="0.35em" font-weight="600">Byte</tspan><tspan font-weight="bold">Blog</tspan>
+  </text>
+</svg>
