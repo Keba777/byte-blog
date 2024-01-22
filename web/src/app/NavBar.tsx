@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import logo from "@/public/images/logo.svg";
+import logo from "../../public/images/logo.svg";
 import Image from "next/image";
 
 const links = [

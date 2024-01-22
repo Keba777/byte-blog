@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import authlogo from "@/public/images/auth.svg";
+import authlogo from "../../../../public/images/auth.svg";
 
 const LoginPage = () => {
   return (
