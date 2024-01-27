@@ -27,17 +27,20 @@ export const createUser = async (req, res) => {
     const salt = await bcrypt.genSalt(Number(process.env.SALT));
     const hashPassword = await bcrypt.hash(req.body.password, salt);
 
-    const folder = req.body.folder || "byte-blog";
-
-    const result = await cloudinary.uploader.upload(req.file.path, {
-      folder: folder,
-    });
+    let profilePictureUrl = null;
+    if (req.file) {
+      const folder = req.body.folder || "byte-blog";
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: folder,
+      });
+      profilePictureUrl = result.secure_url;
+    }
 
     const newUser = new User({
       username: req.body.username,
       email: req.body.email,
       password: hashPassword,
-      profilePicture: result.secure_url,
+      profilePicture: profilePictureUrl,
     });
 
     await newUser.save();
