@@ -1,45 +1,50 @@
+"use client";
+
 import Link from "next/link";
-import useUsers from "@/hooks/useUsers";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import { Credential } from "@/types/user";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import ErrorAlert from "./ErrorAlert";
-
-const validationSchema = yup.object().shape({
-  identifier: yup.string().required("Username or Email is required"),
-  password: yup
-    .string()
-    .required("Password is required")
-    .min(8, "Password must be at least 8 characters")
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/,
-      "Password must contain at least 1 lowercase letter, 1 uppercase letter, 1 digit, and 1 special character"
-    ),
-});
+import { useLoginUserMutation } from "@/store/features/auth";
+import UserCredential, {
+  CredentialValidationSchema,
+} from "@/types/auth/userCredential";
+import { useState } from "react";
+import Cookies from "js-cookie";
 
 const LoginForm = () => {
-  const router = useRouter();
-  const { loginUser, error, setError } = useUsers();
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<Credential>({
-    resolver: yupResolver(validationSchema),
+  } = useForm<UserCredential>({
+    resolver: yupResolver(CredentialValidationSchema),
   });
+  const [loginUser] = useLoginUserMutation();
+  const router = useRouter();
+  const [formError, setFormError] = useState("");
 
-  const onSubmit = (data: Credential) => {
-    loginUser(data)
-      .then(() => {
-        reset();
-        router.push("/");
-      })
-      .catch((err) => {
-        console.error("Error during  logging in", err);
+  const onSubmit = async (data: UserCredential) => {
+    let res = await loginUser(data);
+    if ("error" in res) {
+      if ("status" in res.error) {
+        let errorData = res.error.data as { message: string };
+        setFormError(errorData.message);
+      } else {
+        setFormError(res.error.message!);
+      }
+    } else {
+      console.log("Login successful.", res.data);
+      Cookies.set("user", JSON.stringify(res.data), {
+        expires: 7,
+        path: "/",
+        sameSite: "none",
+        secure: true,
       });
+      reset();
+      router.push("/");
+    }
   };
 
   return (
@@ -95,7 +100,9 @@ const LoginForm = () => {
           </Link>
         </p>
       </form>
-      {error && <ErrorAlert error={error} onClick={() => setError("")} />}
+      {formError && (
+        <ErrorAlert error={formError} onClick={() => setFormError("")} />
+      )}
     </>
   );
 };
