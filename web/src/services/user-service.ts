@@ -1,4 +1,5 @@
 import apiClient from "./api-client";
+import { Credential } from "@/types/user";
 
 class UserService {
   createUser(user: FormData) {
@@ -7,6 +8,9 @@ class UserService {
         "Content-Type": "multipart/form-data",
       },
     });
+  }
+  loginUser(credential: Credential) {
+    return apiClient.post("/auth", credential);
   }
 
   // updateUser(user: User) {

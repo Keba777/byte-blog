@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { User } from "@/types/user";
+import { User, Credential } from "@/types/user";
 import userService from "@/services/user-service";
 
 const useUsers = () => {
@@ -16,6 +16,23 @@ const useUsers = () => {
       })
       .catch((error) => {
         console.error("Error creating user:", error.message);
+        const errorMessage =
+          error.response?.data.message || "An error occurred";
+        setError(errorMessage);
+        throw error;
+      });
+  };
+
+  const loginUser = (credential: Credential) => {
+    return userService
+      .loginUser(credential)
+      .then((response) => {
+        const token = response.data.token;
+        console.log("Login successful. Token:", token);
+        return token;
+      })
+      .catch((error) => {
+        console.error("Login failed:", error);
         const errorMessage =
           error.response?.data.message || "An error occurred";
         setError(errorMessage);
@@ -59,6 +76,7 @@ const useUsers = () => {
     setError,
     setLoading,
     createUser,
+    loginUser,
     // updateUser,
     // deleteUser,
   };

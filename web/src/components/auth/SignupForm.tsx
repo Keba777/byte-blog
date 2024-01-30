@@ -1,30 +1,13 @@
 "use client";
 
-import useUsers from "@/hooks/useUsers";
-import { User } from "@/types/user";
+import User, { UserValidationSchema } from "@/types/auth/user";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import * as yup from "yup";
 import ErrorAlert from "./ErrorAlert";
-
-const validationSchema = yup.object().shape({
-  username: yup.string().required("Username is required"),
-  email: yup
-    .string()
-    .email("Invalid email address")
-    .required("Email is required"),
-  password: yup
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/,
-      "Password must contain at least 1 lowercase letter, 1 uppercase letter, 1 digit, and 1 special character"
-    )
-    .required("Password is required"),
-  profilePicture: yup.mixed(),
-});
+import { useRegisterUserMutation } from "@/store/features/auth";
+import { useState } from "react";
 
 const SignupForm = () => {
   const {
@@ -33,13 +16,15 @@ const SignupForm = () => {
     reset,
     formState: { errors },
   } = useForm<User>({
-    resolver: yupResolver(validationSchema),
+    resolver: yupResolver(UserValidationSchema),
   });
 
-  const { createUser, error, setError } = useUsers();
+  const [registerUser, { isLoading, error, isError }] =
+    useRegisterUserMutation();
   const router = useRouter();
+  const [formError, setFormError] = useState("");
 
-  const onSubmit = (data: User) => {
+  const onSubmit = async (data: User) => {
     const formData = new FormData();
     formData.append("username", data.username);
     formData.append("email", data.email);
@@ -47,14 +32,19 @@ const SignupForm = () => {
     if (data.profilePicture && data.profilePicture[0])
       formData.append("profilePicture", data.profilePicture[0]);
 
-    createUser(formData)
-      .then(() => {
-        reset();
-        router.push("/login");
-      })
-      .catch((err) => {
-        console.error("Error during registration:", err);
-      });
+    let res = await registerUser(formData);
+    if ("error" in res) {
+      if ("status" in res.error) {
+        let errorData = res.error.data as { message: string };
+        setFormError(errorData.message);
+      } else {
+        setFormError(res.error.message!);
+      }
+    } else {
+      console.log("Registration successful.", res.data);
+      reset();
+      router.push("/login");
+    }
   };
 
   return (
@@ -137,7 +127,9 @@ const SignupForm = () => {
           </Link>
         </p>
       </form>
-      {error && <ErrorAlert error={error} onClick={() => setError("")} />}
+      {formError && (
+        <ErrorAlert error={formError} onClick={() => setFormError("")} />
+      )}
     </>
   );
 };

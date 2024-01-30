@@ -4,3 +4,8 @@ export interface User {
   password: string;
   profilePicture?: FileList;
 }
+
+export interface Credential {
+  identifier: string;
+  password: string;
+}
