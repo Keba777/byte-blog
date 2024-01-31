@@ -94,7 +94,7 @@ export const updateUser = async (req, res) => {
     user.profilePicture = result ? result.secure_url : user.profilePicture;
 
     const updatedUser = await user.save();
-    res.send(updatedUser);
+    res.status(200).send(updatedUser);
   } catch (error) {
     console.error(error);
     res.status(500).send({ message: error.message });
