@@ -1,5 +1,5 @@
 import User from "@/types/auth/user";
-import UserCredential from "@/types/auth/userCredential";
+import UserCredential, { LoginResponse } from "@/types/auth/userCredential";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 const authApi = createApi({
@@ -15,11 +15,11 @@ const authApi = createApi({
         body,
       }),
     }),
-    loginUser: build.mutation({
-      query: (userCredential: UserCredential) => ({
+    loginUser: build.mutation<LoginResponse, UserCredential>({
+      query: (body) => ({
         url: "auth",
         method: "Post",
-        body: userCredential,
+        body,
       }),
     }),
   }),

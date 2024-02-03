@@ -4,6 +4,15 @@ interface UserCredential {
   password: string;
 }
 
+
+export interface UserResponse {
+  token: string;
+  _id: string;
+  username: string;
+  email: string;
+  profilePicture?: string;
+}
+
 export const CredentialValidationSchema = yup.object().shape({
   identifier: yup.string().required("Username or Email is required"),
   password: yup

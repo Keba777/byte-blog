@@ -6,11 +6,14 @@ import { useRouter } from "next/navigation";
 import { yupResolver } from "@hookform/resolvers/yup";
 import ErrorAlert from "./ErrorAlert";
 import { useLoginUserMutation } from "@/store/features/auth";
+import { setUser, setError, setLoading } from "@/store/slices/authSlice";
 import UserCredential, {
   CredentialValidationSchema,
 } from "@/types/auth/userCredential";
+
 import { useState } from "react";
-import Cookies from "js-cookie";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 const LoginForm = () => {
   const {
@@ -21,29 +24,43 @@ const LoginForm = () => {
   } = useForm<UserCredential>({
     resolver: yupResolver(CredentialValidationSchema),
   });
+
   const [loginUser] = useLoginUserMutation();
   const router = useRouter();
+  const dispatch = useDispatch();
+
   const [formError, setFormError] = useState("");
 
+  const user = useSelector((state: RootState) => state.auth.user);
+
+  if (user) {
+    router.push("/");
+  }
+
   const onSubmit = async (data: UserCredential) => {
-    let res = await loginUser(data);
-    if ("error" in res) {
-      if ("status" in res.error) {
-        let errorData = res.error.data as { message: string };
-        setFormError(errorData.message);
+    try {
+      dispatch(setLoading(true));
+      const res = await loginUser(data);
+
+      if ("error" in res) {
+        if ("status" in res.error) {
+          let errorData = res.error.data as { message: string };
+          dispatch(setError(errorData.message));
+        } else {
+          dispatch(setError(res.error.message!));
+        }
       } else {
-        setFormError(res.error.message!);
+        const user = res.data;
+        dispatch(setUser(user));
+        console.log("Login successful.", user);
+
+        reset();
+        router.push("/");
       }
-    } else {
-      console.log("Login successful.", res.data);
-      Cookies.set("user", JSON.stringify(res.data), {
-        expires: 7,
-        path: "/",
-        sameSite: "none",
-        secure: true,
-      });
-      reset();
-      router.push("/");
+    } catch (error: any) {
+      dispatch(setError(error.message || "An error occurred during login"));
+    } finally {
+      dispatch(setLoading(false));
     }
   };
 

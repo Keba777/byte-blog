@@ -31,7 +31,13 @@ export const loginUser = async (req, res) => {
         .send({ message: "Invalid Email/Username or Password" });
 
     const token = user.generateAuthToken();
-    res.status(200).send({ token: token, message: "Logged in successfully" });
+    res.status(200).send({
+      token: token,
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      profilePicture: user.profilePicture,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).send({ message: error.message });

@@ -1,9 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import logo from "../../public/images/logo.svg";
+import { useRouter, usePathname } from "next/navigation";
+import logo from "../../../public/images/logo.svg";
 import Image from "next/image";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/store";
+import { setUser } from "@/store/slices/authSlice";
+import ProfileAvatar from "./ProfileAvatar";
 
 const links = [
   { href: "/", label: "Home" },
@@ -14,8 +18,17 @@ const links = [
 
 const NavBar = () => {
   const currentPath = usePathname();
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const user = useSelector((state: RootState) => state.auth.user);
+
+  const handleLogout = () => {
+    dispatch(setUser(null));
+    router.push("/");
+  };
+
   return (
-    <nav className="py-2 pe-2 flex justify-between items-center space-x-5  bg-gray-100">
+    <nav className=" py-3 pe-2 flex justify-between items-center space-x-5  bg-gray-100">
       <div className="flex justify-between items-center">
         <Link href="/">
           <Image src={logo} alt="logo" />
@@ -36,9 +49,16 @@ const NavBar = () => {
       </div>
 
       <div>
-        <Link href="/login" className="px-4 py-2 rounded ">
-          Login
-        </Link>
+        {user ? (
+          <ProfileAvatar
+            onLogout={handleLogout}
+            imageUrl={user?.profilePicture}
+          />
+        ) : (
+          <div>
+            <Link href="/login">Login</Link>
+          </div>
+        )}
       </div>
     </nav>
   );
