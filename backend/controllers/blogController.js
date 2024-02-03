@@ -34,7 +34,10 @@ export const createBlog = async (req, res) => {
 
 export const getBlogs = async (req, res) => {
   try {
-    const blogs = await Blog.find();
+    const blogs = await Blog.find().populate({
+      path: "author",
+      select: "-password",
+    });
     res.status(200).send(blogs);
   } catch (error) {
     console.error(error);
@@ -45,7 +48,10 @@ export const getBlogs = async (req, res) => {
 export const getBlogById = async (req, res) => {
   try {
     const blogId = req.params.blogId;
-    const blog = await Blog.findById(blogId);
+    const blog = await Blog.findById(blogId).populate({
+      path: "author",
+      select: "-password",
+    });
     if (!blog)
       return res.status(404).send("The blog with the given ID was not found.");
     res.status(200).send(blog);
