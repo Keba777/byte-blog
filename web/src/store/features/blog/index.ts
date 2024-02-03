@@ -1,10 +1,21 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { Blog, BlogForm } from "@/types/blog/blog";
+import { RootState } from "@/store";
 
 const blogApi = createApi({
   reducerPath: "blog-api",
   baseQuery: fetchBaseQuery({
     baseUrl: "http://localhost:5000/api",
+    prepareHeaders: (headers, { getState }) => {
+      const state: RootState = getState() as RootState;
+      const token = state.auth.user?.token;
+
+      if (token) {
+        headers.set("Authorization", `${token}`);
+      }
+
+      return headers;
+    },
   }),
 
   endpoints: (build) => ({

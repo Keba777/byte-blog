@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TagSelect from "./TagSelect";
 import SimpleMDE from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
@@ -10,6 +10,8 @@ import { BlogForm as Blog, BlogValidationSchema } from "@/types/blog/blog";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "next/navigation";
 import { usePostBlogMutation } from "@/store/features/blog";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 const BlogForm = () => {
   const {
@@ -18,7 +20,7 @@ const BlogForm = () => {
     setValue,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<Blog>({
     resolver: yupResolver(BlogValidationSchema),
   });
@@ -26,6 +28,7 @@ const BlogForm = () => {
   const [postBlog] = usePostBlogMutation();
   const [tags, setTags] = useState<string[]>([]);
   const router = useRouter();
+  const user = useSelector((state: RootState) => state.auth.user);
   const [formError, setFormError] = useState("");
 
   const handleTagClick = (tag: string) => {
@@ -36,17 +39,29 @@ const BlogForm = () => {
     } else {
       setTags((prevTags) => [...prevTags, tag]);
     }
-
     setValue("tags", tags);
   };
+
+  useEffect(() => {
+    if (user?._id) {
+      setValue("author", user._id);
+    }
+  }, [user?._id, setValue]);
 
   const onSubmit = async (data: Blog) => {
     const formData = new FormData();
     formData.append("title", data.title);
     formData.append("content", data.content);
-    formData.append("tags", JSON.stringify(tags));
-    if (data.image && data.image[0])
-      formData.append("profilePicture", data.image[0]);
+    if (user?._id) formData.append("author", user._id);
+    tags.forEach((tag, index) => {
+      formData.append(`tags[${index}]`, tag);
+    });
+    if (data.image && data.image[0]) {
+      formData.append("image", data.image[0]);
+    } else {
+      setFormError("Image is required");
+      return;
+    }
 
     let res = await postBlog(formData);
     if ("error" in res) {
@@ -59,7 +74,7 @@ const BlogForm = () => {
     } else {
       console.log("Post successful.", res.data);
       reset();
-      router.push("/login");
+      router.push("/blogs");
     }
   };
 
@@ -125,8 +140,8 @@ const BlogForm = () => {
             + POST
           </button>
         </div>
+        {formError && <p className="text-red-600">{formError}</p>}
       </form>
-      {formError && <p className="text-red-600">{formError}</p>}
     </div>
   );
 };
