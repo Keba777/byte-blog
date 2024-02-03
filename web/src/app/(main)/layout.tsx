@@ -13,8 +13,8 @@ export default function RootLayout({
 }) {
   return (
     <>
-      <NavBar />
-      <main>{children}</main>
+      <NavBar  />
+      <main className="mt-16">{children}</main>
     </>
   );
 }

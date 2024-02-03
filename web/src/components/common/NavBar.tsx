@@ -28,7 +28,7 @@ const NavBar = () => {
   };
 
   return (
-    <nav className=" py-3 pe-2 flex justify-between items-center space-x-5  bg-gray-100">
+    <nav className=" fixed top-0 w-full z-50 py-3 pe-2 flex justify-between items-center space-x-5  bg-gray-100">
       <div className="flex justify-between items-center">
         <Link href="/">
           <Image src={logo} alt="logo" />
@@ -55,9 +55,12 @@ const NavBar = () => {
             imageUrl={user?.profilePicture}
           />
         ) : (
-          <div>
-            <Link href="/login">Login</Link>
-          </div>
+          <Link
+            href="/login"
+            className={`text-[#3C3C3C] text-base font-semibold font-montserrat pl-5 cursor-pointer hover:text-gray-400`}
+          >
+            Login
+          </Link>
         )}
       </div>
     </nav>

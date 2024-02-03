@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 
 interface Props {
@@ -28,9 +28,16 @@ export default function ProfileAvatar({ imageUrl, onLogout }: Props) {
       setPopoverVisible(false);
     }
   };
+  useEffect(() => {
+    document.addEventListener("click", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
 
   return (
-    <div className="relative">
+    <div className="relative" onClick={handleClickOutside}>
       <div className="md:ml-3 md:px-0 px-14 rounded-full  flex justify-center items-center">
         <button title="button" onClick={togglePopover} ref={buttonRef}>
           <Image
