@@ -11,7 +11,7 @@ export default function ProfileAvatar({ imageUrl, onLogout }: Props) {
   const [popoverVisible, setPopoverVisible] = useState(false);
 
   if (!imageUrl) {
-    imageUrl = "/images/avatar.jpg";
+    imageUrl = "../../../public/images/user.png";
   }
 
   const buttonRef = useRef<HTMLButtonElement>(null);
