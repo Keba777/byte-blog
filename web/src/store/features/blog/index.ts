@@ -5,7 +5,7 @@ import { RootState } from "@/store";
 const blogApi = createApi({
   reducerPath: "blog-api",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:5000/api",
+    baseUrl: "https://byte-blog-api.onrender.com/api",
     prepareHeaders: (headers, { getState }) => {
       const state: RootState = getState() as RootState;
       const token = state.auth.user?.token;

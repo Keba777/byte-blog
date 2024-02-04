@@ -1,11 +1,11 @@
 import User from "@/types/auth/user";
-import UserCredential, { LoginResponse } from "@/types/auth/userCredential";
+import UserCredential, { UserResponse } from "@/types/auth/userCredential";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 const authApi = createApi({
   reducerPath: "auth-api",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:5000/api",
+    baseUrl: "https://byte-blog-api.onrender.com/api",
   }),
   endpoints: (build) => ({
     registerUser: build.mutation<User, FormData>({
@@ -15,7 +15,7 @@ const authApi = createApi({
         body,
       }),
     }),
-    loginUser: build.mutation<LoginResponse, UserCredential>({
+    loginUser: build.mutation<UserResponse, UserCredential>({
       query: (body) => ({
         url: "auth",
         method: "Post",
