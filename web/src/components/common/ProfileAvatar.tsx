@@ -1,6 +1,7 @@
 "use client";
 import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
+import userAvatar from "../../../public/images/user.png";
 
 interface Props {
   imageUrl?: string;
@@ -9,10 +10,6 @@ interface Props {
 
 export default function ProfileAvatar({ imageUrl, onLogout }: Props) {
   const [popoverVisible, setPopoverVisible] = useState(false);
-
-  if (!imageUrl) {
-    imageUrl = "../../../public/images/user.png";
-  }
 
   const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -44,7 +41,7 @@ export default function ProfileAvatar({ imageUrl, onLogout }: Props) {
             width={100}
             height={100}
             className="w-10 h-10 rounded-full"
-            src={imageUrl}
+            src={imageUrl || userAvatar}
             alt="image"
           />
         </button>
