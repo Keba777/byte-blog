@@ -28,7 +28,7 @@ const NavBar = () => {
   };
 
   return (
-    <nav className=" fixed top-0 w-full z-50 py-3 pe-2 flex justify-between items-center space-x-5  bg-gray-100">
+    <nav className=" fixed top-0 w-full z-50 py-3 pe-5 px-5 flex justify-between items-center space-x-5  bg-gray-100">
       <div className="flex justify-between items-center">
         <Link href="/">
           <Image src={logo} alt="logo" />

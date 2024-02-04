@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import NavBar from "@/components/common/NavBar";
+import Footer from "@/components/common/Footer";
 
 export const metadata: Metadata = {
   title: "Byte Blog",
@@ -13,8 +14,9 @@ export default function RootLayout({
 }) {
   return (
     <>
-      <NavBar  />
+      <NavBar />
       <main className="mt-16">{children}</main>
+      <Footer />
     </>
   );
 }
