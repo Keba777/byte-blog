@@ -12,7 +12,7 @@ export interface Blog {
   };
   tags: string[];
   likes: number;
-  updateAt: Date;
+  updatedAt: Date;
   image: string;
 }
 
