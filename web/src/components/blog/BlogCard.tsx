@@ -28,12 +28,12 @@ const BlogCard = ({ blog, classes }: Props) => {
           <h2 className="font-roboto font-bold text-xl text-dark-soft md:text-2xl lg:text-[28px]">
             {blog.title}
           </h2>
-          <p className="text-dark-light mt-3 text-sm md:text-lg">
+          {/* <p className="text-dark-light mt-3 text-sm md:text-lg">
             {blog.author.username}
-          </p>
+          </p> */}
         </Link>
       </div>
-      <div className="flex justify-between flex-nowrap items-center mt-6">
+      <div className="flex justify-between flex-nowrap items-center my-5 mx-5">
         <div className="flex items-center gap-x-2 md:gap-x-2.5">
           <Image
             src={blog.author.profilePicture || userAvatar}
@@ -43,7 +43,7 @@ const BlogCard = ({ blog, classes }: Props) => {
             height={400}
           />
 
-          <div className="flex flex-col">
+          <div className="flex flex-col mx-2">
             <h4 className="font-bold italic text-dark-soft text-sm md:text-base">
               {blog.author.username}
             </h4>
@@ -57,6 +57,9 @@ const BlogCard = ({ blog, classes }: Props) => {
           })}
         </span>
       </div>
+      {/* <div className="left-0 right-0 flex justify-center p-3 border-t bg-red-400">
+          <Like />
+        </div> */}
     </div>
   );
 };
