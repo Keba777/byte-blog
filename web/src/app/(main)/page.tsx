@@ -7,6 +7,7 @@ import Hero from "@/components/common/Hero";
 import { useGetBlogsQuery } from "@/store/features/blog";
 import { FaArrowRight } from "react-icons/fa";
 import Link from "next/link";
+import { Blog } from "@/types/blog/blog";
 
 export default function Home() {
   let { data: blogs, error, isLoading } = useGetBlogsQuery();
@@ -25,7 +26,7 @@ export default function Home() {
           ) : error ? (
             <ErrorMessage message="Couldn't fetch the posts data" />
           ) : (
-            blogs?.map((blog) => (
+            blogs?.map((blog: Blog) => (
               <BlogCard
                 key={blog._id}
                 blog={blog}
@@ -35,7 +36,10 @@ export default function Home() {
           )}
         </div>
         <button className="mx-auto  font-bold text-primary border-2 border-primary px-6 py-3 rounded-lg">
-          <Link href="/blogs" className="flex items-center gap-x-2 hover:gap-x-3">
+          <Link
+            href="/blogs"
+            className="flex items-center gap-x-2 hover:gap-x-3"
+          >
             <span>More articles</span>
             <FaArrowRight className="w-3 h-3" />
           </Link>
